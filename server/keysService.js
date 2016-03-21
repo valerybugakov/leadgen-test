@@ -1,10 +1,19 @@
-var keys = [];
+import { Key } from './db'
 
-const get = () => keys;
-export {get};
+let keys = []
 
-setInterval(() => {
-  keys=newKeys;
-})
-import db from './db';
+// .exec() gives you a fully-fledged promise
+setInterval(async () => {
+  // keys = Key.find().exec().catch(err => console.error(err))
+  try {
+    keys = await Key.find()
+  } catch (err) {
+    console.error(err)
+  }
+}, 2000)
+
+const get = () => keys
+
+export default { get }
+
 

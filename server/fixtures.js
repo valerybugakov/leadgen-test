@@ -1,13 +1,16 @@
-import db, { Key } from './db'
+import db, { Key, Host } from './db'
 import assert from 'assert'
 
 const keys = [
-  { _id: 'test', url: 'test_url', order: 1 },
-  { _id: 'test2', url: 'test_url_2', order: 2 },
+  { words: ['test', 'test2'], url: 'test_url', order: 1 },
+  { words: ['test2', 'omg'], url: 'facebook.com', order: 2 },
+  { words: ['localhost', 'github'], url: 'google.com', order: 3 },
 ]
 
-const insertDummyKeys = (data) => {
-  Key.collection.insert(data, {}, (err) => {
+const hosts = [{ hostname: 'localhost' }, { hostname: 'github' }]
+
+const insertCollectionData = (schema, data) => {
+  schema.collection.insert(data, {}, (err) => {
     if (err) {
       assert(null, err)
       return
@@ -16,14 +19,18 @@ const insertDummyKeys = (data) => {
   })
 }
 
-db.once('open', () => {
-  Key.count({}).then(count => {
-    if (count === 0) {
-      insertDummyKeys(keys)
-      return
+const initDummyData = async () => {
+  try {
+    if (await Key.count({}) === 0) {
+      insertCollectionData(Key, keys)
     }
 
-    console.log('Keys has values')
-  })
-})
+    if (await Host.count({}) === 0) {
+      insertCollectionData(Host, hosts)
+    }
+  } catch(err) {
+    console.error(err)
+  }
+}
 
+db.once('open', initDummyData)
