@@ -1,15 +1,29 @@
-import dbPromise from './db';
+import db, { Key } from './db'
+import assert from 'assert'
 
-export default dbPromise.then(db => {
-    const keys = [
-      { _id: 'test', url: 'test_url', order: 1 },
-      { _id: 'test2', url: 'test_url_2', order: 2 }
-    ]
+const keys = [
+  { _id: 'test', url: 'test_url', order: 1 },
+  { _id: 'test2', url: 'test_url_2', order: 2 },
+]
 
-  return db.collection('keys').insert(keys, (err, result) => {
+const insertDummyKeys = (data) => {
+  Key.collection.insert(data, {}, (err) => {
+    if (err) {
       assert(null, err)
-      console.log('Inserted successfully')
-      callback()
-    })
-  }
-)
+      return
+    }
+    console.log('Inserted successfully')
+  })
+}
+
+db.once('open', () => {
+  Key.count({}).then(count => {
+    if (count === 0) {
+      insertDummyKeys(keys)
+      return
+    }
+
+    console.log('Keys has values')
+  })
+})
+
