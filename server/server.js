@@ -1,29 +1,29 @@
-'use strict'
+import express from 'express'
+import config from 'config'
+import db from './db'
+import keysService from './keysService'
+import hostsService from './hostsService'
 
-const http = require('http')
-const fs = require('fs')
-import config from 'config';
-const path = require('path');
-const express = require('express')
-const assert = require('assert')
-const MongoClient = require('mongodb').MongoClient
-const port = config.get('port');
-const config = JSON.parse(fs.readFileSync(path.resolve(__dirname, './config.json')))
+const port = config.get('port')
+const app = express()
 
+app.set('view engine', 'ejs')
 
-const app = express();
-//app.use( template ejs)
+app.get('/', (req, res) => {
+  const { currentHost, ref, var1 } = req.query
+  const keys = keysService.get()
+  const hosts = hostsService.get()
 
+  if (hosts.some(host => host.name === currentHost)) {
+    console.log('Omg, wrong domain!')
+    res.sendStatus(200)
+    return
+  }
 
-app.get('/?host', (req, res) => {
-  const { host, ref, var1} = req.params;
-  //check for domains
-  //if ok respond with script as string
-
-  res.render('script', { keys: keysService.get() });
-});
-//app.serve static
+  console.log('Sending script...')
+  res.render('script', { currentHost, keys, ref, var1 })
+})
 
 app.listen(port, () => {
-  console.log('Server is listening on: http://localhost:', port);
+  console.log(`🔥 Server is listening on: http://localhost:${port}`)
 })

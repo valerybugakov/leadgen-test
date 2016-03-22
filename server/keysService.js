@@ -1,10 +1,15 @@
-var keys = [];
+import { Key } from './db'
+import config from 'config'
 
-const get = () => keys;
-export {get};
+let keys = []
 
-setInterval(() => {
-  keys=newKeys;
-})
-import db from './db';
+const setKeys = async () => {
+  keys = await Key.find()
+}
 
+setKeys()
+setInterval(setKeys, config.get('updateInterval'))
+
+const get = () => keys
+
+export default { get }

@@ -1,17 +1,23 @@
-//exports promise of DB
+import mongoose from 'mongoose'
+import config from 'config'
 
-MongoClient.connect('mongodb://localhost:27017/seoDb', (err, db) => {
-  console.log('error:\n ', err)
-  return
-}
-console.log('We are connected')
-const collection = db.collection('keys')
-if (collection.count() === 0) {
-  insertData(db, () => db.close())
-  // insertData(db).then(db.close)
-}
-keys = collection.find()
+mongoose.connect(config.get('db'))
+
+const db = mongoose.connection
+db.on('error', console.error.bind(console, 'Connection Error:\n'))
+db.once('open', console.log.bind(console, 'Connected successfully'))
+
+const keySchema = mongoose.Schema({
+  words: Array,
+  url: String,
+  order: Number,
 })
 
+const hostSchema = mongoose.Schema({
+  name: String,
+})
 
-// Promise factory or async yield
+export const Key = mongoose.model('Key', keySchema)
+export const Host = mongoose.model('Host', hostSchema)
+
+export default db
