@@ -9,20 +9,21 @@ const app = express()
 
 app.set('view engine', 'ejs')
 
-app.get('/?host', (req, res) => {
-  const { host, ref, var1 } = req.query
+app.get('/', (req, res) => {
+  const { currentHost, ref, var1 } = req.query
   const keys = keysService.get()
   const hosts = hostsService.get()
-  console.log(hosts)
 
-  if (hosts.some(hostObj => hostObj.hostname === host)) {
+  if (hosts.some(host => host.name === currentHost)) {
     console.log('Omg, wrong domain!')
-    res.sendStatus(200);
+    res.sendStatus(200)
     return
   }
-  res.render('script', { keys })
+
+  console.log('Sending script...')
+  res.render('script', { currentHost, keys, ref, var1 })
 })
 
 app.listen(port, () => {
-  console.log('🔥 Server is listening on: http://localhost:', port)
+  console.log(`🔥 Server is listening on: http://localhost:${port}`)
 })

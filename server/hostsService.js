@@ -1,13 +1,15 @@
 import { Host } from './db'
+import config from 'config'
 
 let hosts = []
 
-setInterval(async () => {
+const setHosts = async () => {
   hosts = await Host.find()
-}, 2000)
+}
+
+setHosts()
+setInterval(setHosts, config.get('updateInterval'))
 
 const get = () => hosts
 
 export default { get }
-
-

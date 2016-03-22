@@ -1,12 +1,11 @@
 import mongoose from 'mongoose'
+import config from 'config'
 
-//add live DB
-const dbURI = ''
-mongoose.connect(dbURI)
+mongoose.connect(config.get('db'))
 
 const db = mongoose.connection
-db.on('error', console.error.bind(console, 'Connection Error: '))
-db.once('open', console.log.bind(console, 'We are connected'))
+db.on('error', console.error.bind(console, 'Connection Error:\n'))
+db.once('open', console.log.bind(console, 'Connected successfully'))
 
 const keySchema = mongoose.Schema({
   words: Array,
@@ -15,16 +14,10 @@ const keySchema = mongoose.Schema({
 })
 
 const hostSchema = mongoose.Schema({
-  hostname: String,
+  name: String,
 })
 
 export const Key = mongoose.model('Key', keySchema)
 export const Host = mongoose.model('Host', hostSchema)
 
-//connectToDb(callback);
-//export default new Promise((resolve, reject) => {
-//  connectToDb((err, result) => {
-//    if (err) {reject(err)}
-//    resolve(result);
-//  });
-//})
+export default db

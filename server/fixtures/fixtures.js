@@ -1,13 +1,17 @@
-import db, { Key, Host } from './db'
+import { Key, Host } from '../db'
 import assert from 'assert'
 
 const keys = [
-  { words: ['test', 'test2'], url: 'test_url', order: 1 },
+  {
+    order: 1,
+    words: ['Stack Overflow', 'javascript'],
+    url: 'https://youtube.com/?data=placeholder_for_var1',
+  },
   { words: ['test2', 'omg'], url: 'facebook.com', order: 2 },
   { words: ['localhost', 'github'], url: 'google.com', order: 3 },
 ]
 
-const hosts = [{ hostname: 'localhost' }, { hostname: 'github' }]
+const hosts = [{ name: 'localhost' }, { name: 'github' }]
 
 const insertCollectionData = (schema, data) => {
   schema.collection.insert(data, {}, (err) => {
@@ -28,9 +32,10 @@ const initDummyData = async () => {
     if (await Host.count({}) === 0) {
       insertCollectionData(Host, hosts)
     }
-  } catch(err) {
+  } catch (err) {
     console.error(err)
   }
+  process.exit()
 }
 
-db.once('open', initDummyData)
+initDummyData()

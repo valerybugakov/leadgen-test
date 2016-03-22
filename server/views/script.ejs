@@ -1,5 +1,37 @@
-var keys=<%=JSON.stringify(keys) %>
-//check cookie
+console.log('LEAD_GEN script loaded')
 
+var var1 = "<%- var1 %>"
+var keys = <%- JSON.stringify(keys) %>
+var currentHost = "<%- currentHost %>"
+var cookieName = 'LEAD_GEN'
+var title = document.title
 
+var setCookie = function(name, host) {
+  var cookieValue = 'true'
+  var myDate = new Date()
+  myDate.setMonth(myDate.getMonth() + 12)
+  var cookieString = cookieName + '=' + cookieValue + ';expires=' + myDate
+                    + ';domain=.' + host + ';path=/'
+  document.cookie = cookieString
+}
+
+var checkCookie = function(cookieName) {
+  var cookieRegex = new RegExp('^(.*; )?' + cookieName + '=[^;]+(.*)?$')
+  return document.cookie.match(cookieRegex) && true
+}
+
+if (!checkCookie(cookieName)) {
+  keys.some(function(key) {
+    return key.words.some(function(word) {
+      if (title.indexOf(word) > -1) {
+        setCookie(cookieName, currentHost)
+        window.onbeforeunload = null
+        window.location = key.url.replace('placeholder_for_var1', var1)
+        return true
+      }
+
+      return false
+    })
+  })
+}
 

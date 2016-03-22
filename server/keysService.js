@@ -3,14 +3,13 @@ import config from 'config'
 
 let keys = []
 
-const setKeys= async () => {
+const setKeys = async () => {
   keys = await Key.find()
 }
 
+setKeys()
 setInterval(setKeys, config.get('updateInterval'))
-setKeys();
-const get = () => keys;
+
+const get = () => keys
 
 export default { get }
-
-
