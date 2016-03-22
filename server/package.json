@@ -4,6 +4,7 @@
   "description": "LeadGen Test server",
   "main": "server.js",
   "scripts": {
+    "fixtures":"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },

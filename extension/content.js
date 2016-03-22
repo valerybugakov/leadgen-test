@@ -6,10 +6,10 @@
     return;
   }
 
-  //if(document.documentElement.hasAttribute('data-leadgen')){
-  //  console.log('DUPLICATE');
-  //  return;
-  //}
+  if(document.documentElement.hasAttribute('data-leadgen')){
+    console.log('DUPLICATE');
+    return;
+  }
   document.documentElement.setAttribute('data-leadgen','yes');
   var script=document.createElement('script');
 
@@ -34,5 +34,4 @@
     for(var name in query)query.hasOwnProperty(name)&&res.push(encodeURIComponent(name)+'='+encodeURIComponent(query[name]));
     return res.join('&');
   }
-
 }();
