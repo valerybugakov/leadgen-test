@@ -7,34 +7,44 @@ const keys = [
     words: ['Stack Overflow', 'javascript'],
     url: 'https://youtube.com/?data=placeholder_for_var1',
   },
-  { words: ['test2', 'omg'], url: 'facebook.com', order: 2 },
-  { words: ['localhost', 'github'], url: 'google.com', order: 3 },
+  {
+    order: 2,
+    words: ['es6', 'react vs angular 2'],
+    url: 'github.com',
+  },
+  {
+    order: 3,
+    words: ['localhost', 'github'],
+    url: 'google.com',
+  },
 ]
 
-const hosts = [{ name: 'localhost' }, { name: 'github' }]
-
-const insertCollectionData = (schema, data) => {
-  schema.collection.insert(data, {}, (err) => {
-    if (err) {
-      assert(null, err)
-      return
-    }
-    console.log('Inserted successfully')
-  })
-}
+const hosts = [
+  { name: 'localhost' },
+  { name: 'github' },
+]
 
 const initDummyData = async () => {
   try {
-    if (await Key.count({}) === 0) {
-      insertCollectionData(Key, keys)
+    const keysCount = await Key.count({})
+    const hostsCount = await Host.count({})
+
+    if (!keysCount) {
+      await Key.insertMany(keys)
     }
 
-    if (await Host.count({}) === 0) {
-      insertCollectionData(Host, hosts)
+    if (!hostsCount) {
+      await Host.insertMany(hosts)
     }
+
+    if (!keysCount || !hostsCount) {
+      console.log('Inserted successfully')
+    }
+
   } catch (err) {
     console.error(err)
   }
+
   process.exit()
 }
 
